@@ -2,6 +2,7 @@ package com.laba3.CourseAggregator;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.laba3.CourseAggregator.exceptions.AsyncExceptionHandler;
+import com.laba3.CourseAggregator.exceptions.RestTemplateResponseErrorHandler;
 import com.laba3.CourseAggregator.utils.CurrencyNamingConverter;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,7 @@ public class AppConfiguration implements AsyncConfigurer {
         return restTemplateBuilder
                 .setConnectTimeout(Duration.ofMillis(connectTimeout))
                 .setReadTimeout(Duration.ofMillis(readTimeout))
+                .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }
 

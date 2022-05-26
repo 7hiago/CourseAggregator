@@ -1,14 +1,19 @@
 package com.laba3.CourseAggregator.services;
 
 import com.laba3.CourseAggregator.entities.Course;
+import com.laba3.CourseAggregator.exceptions.ApiTimeoutException;
+import com.laba3.CourseAggregator.exceptions.CourseNotFoundException;
+import com.laba3.CourseAggregator.exceptions.DateWrongParametersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,11 +39,15 @@ public class CourseService {
     public Course getNacbankCurrentCourse(String currency) {
         try {
             logger.debug("execute getNacbankCurrentCourse method");
-            return nacBankApiServiceImpl.getCurrentCourse(currency).get();
+            Course course = nacBankApiServiceImpl.getCurrentCourse(currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
+            return course;
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
             logger.error(e.getMessage());
-//            throw new ServerException(e.getMessage());
         }
         logger.debug("execute getNacbankCurrentCourse method with NULL");
         return null;
@@ -48,11 +57,14 @@ public class CourseService {
     public Course getNacbankArchiveCourse(String date, String currency) {
         try {
             logger.debug("execute getNacbankArchiveCourse method");
-            return nacBankApiServiceImpl.getArchiveCourse(date, currency).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Course course = nacBankApiServiceImpl.getArchiveCourse(date, currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
+            return course;
+       } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
-//            throw new ServerException(e.getMessage());
         }
         logger.debug("execute getNacbankArchiveCourse method with NULL");
         return null;
@@ -64,9 +76,7 @@ public class CourseService {
             logger.debug("execute getPrivatbankCurrentCourse method");
             return privatBankApiServiceImpl.getCurrentCourse(currency).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
-//            throw new ServerException(e.getMessage());
         }
         logger.debug("execute getPrivatbankCurrentCourse method with NULL");
         return null;
@@ -78,9 +88,7 @@ public class CourseService {
             logger.debug("execute getPrivatbankArchiveCourse method");
             return privatBankApiServiceImpl.getArchiveCourse(date, currency).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
-//            throw new ServerException(e.getMessage());
         }
         logger.debug("execute getPrivatbankArchiveCourse method with NULL");
         return null;
@@ -92,9 +100,7 @@ public class CourseService {
             logger.debug("execute getMonobankCurrentCourse method");
             return monoBankApiServiceImpl.getCurrentCourse(currency).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
-//            throw new ServerException(e.getMessage());
         }
         logger.debug("execute getMonobankCurrentCourse method with NULL");
         return null;
