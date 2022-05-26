@@ -31,7 +31,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/nacbank", params = "date")
-    public ResponseEntity<Course> nacbankArchiveCourse(@RequestParam(value = "date", defaultValue = "yesterday") String date,
+    public ResponseEntity<Course> nacbankArchiveCourse(@RequestParam(value = "date") String date,
                                                        @RequestParam(value = "currency", defaultValue = "USD") String currency) {
         logger.debug("executing archive /api/nacbank endpoint");
         return ResponseEntity.ok(courseService.getNacbankArchiveCourse(date, currency));
@@ -44,7 +44,7 @@ public class CourseController {
     }
 
     @GetMapping(value = "/privatbank", params = "date")
-    public ResponseEntity<Course> privatbankArchiveCourses(@RequestParam(value = "date", defaultValue = "yesterday") String date,
+    public ResponseEntity<Course> privatbankArchiveCourses(@RequestParam(value = "date") String date,
                                                            @RequestParam(value = "currency", defaultValue = "USD") String currency) {
         logger.debug("executing archive /api/privat endpoint");
         return ResponseEntity.ok(courseService.getPrivatbankArchiveCourse(date, currency));

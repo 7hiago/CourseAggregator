@@ -1,8 +1,6 @@
 package com.laba3.CourseAggregator.services;
 
 import com.laba3.CourseAggregator.entities.Course;
-import com.laba3.CourseAggregator.exceptions.ApiTimeoutException;
-import com.laba3.CourseAggregator.exceptions.CourseNotFoundException;
 import com.laba3.CourseAggregator.utils.CurrencyNamingConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -35,29 +32,24 @@ public class MonoBankApiServiceImpl implements BankApiService{
     @Async("asyncCourseExecutor")
     @Override
     public CompletableFuture<Course> getCurrentCourse(String currency) {
-        try {
-            ResponseEntity<Course[]> courseList = restTemplate.getForEntity(monobankCurrentUrl, Course[].class);
+        Course outCourse = null;
+        ResponseEntity<Course[]> courseList = restTemplate.getForEntity(monobankCurrentUrl, Course[].class);
 
-            LocalDateTime now = LocalDateTime.now();
-            ZoneId zone = ZoneId.of("Europe/Kiev");
+        LocalDateTime now = LocalDateTime.now();
+        ZoneId zone = ZoneId.of("Europe/Kiev");
 
-            for (Course course : courseList.getBody()) {
-                if (course.getCurrency().equals(converter.convert(currency))) {
-                    course.setCurrency(currency);
-                    LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(Integer.valueOf(course.getDate()), 0, zone.getRules().getOffset(now));
-                    course.setDate(localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-                    course.setBank("Monobank");
-                    logger.debug("execute getCurrentCourse method with " + course);
-                    return CompletableFuture.completedFuture(course);
-                }
+        for (Course course : courseList.getBody()) {
+            if (course.getCurrency().equals(converter.convert(currency))) {
+                course.setCurrency(currency);
+                LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(Integer.valueOf(course.getDate()), 0, zone.getRules().getOffset(now));
+                course.setDate(localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+                course.setBank("Monobank");
+                logger.debug("execute getCurrentCourse method with " + course);
+                outCourse = course;
+                break;
             }
-        } catch (ResourceAccessException e) {
-            logger.error("Monobank api connecting timeout");
-            throw new ApiTimeoutException("Monobank api connecting timeout");
         }
-        logger.debug("execute getCurrentCourse method with NULL");
-        logger.warn(currency + " currency is not available in this bank");
-        throw new CourseNotFoundException(currency + " currency is not available in this bank");
+        return CompletableFuture.completedFuture(outCourse);
     }
 
     @Override

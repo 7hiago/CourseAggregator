@@ -1,12 +1,14 @@
 package com.laba3.CourseAggregator.services;
 
 import com.laba3.CourseAggregator.entities.Course;
+import com.laba3.CourseAggregator.exceptions.DateWrongParametersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,12 +24,14 @@ public class FeatureCourseService {
     }
 
     public Course getBestCourse(String date, String currency) {
-        LocalDate localDate;
-        if(date.equals("today")) {
-            localDate = LocalDate.now();
-            logger.debug("executing getBestCourse method and get date: " + localDate + " from " + date);
-        } else {
-            localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        LocalDate localDate = LocalDate.now();
+        try {
+            if(!date.equals("today")) {
+                logger.debug("executing getBestCourse method and get date: " + localDate + " from " + date);
+                localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            }
+        } catch (DateTimeParseException e) {
+            throw new DateWrongParametersException(date + " date format is not available. Use dd.MM.yyyy format!");
         }
         List<Course> courseList = new ArrayList<>();
         if(localDate.equals(LocalDate.now())) {
@@ -38,7 +42,8 @@ public class FeatureCourseService {
             courseList.add(courseService.getNacbankArchiveCourse(date, currency));
             courseList.add(courseService.getPrivatbankArchiveCourse(date, currency));
         } else {
-            logger.debug("date must be before or equals today");
+            logger.debug("date must be before or equal today");
+            throw new DateWrongParametersException(date + " wrong date. Date must be before or equal today!");
         }
         Collections.sort(courseList);
 
