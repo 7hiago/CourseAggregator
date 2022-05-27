@@ -15,13 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class APIKeyAuthFilter extends GenericFilterBean {
-    private static final Logger logger = LoggerFactory.getLogger(APIKeyAuthFilter.class);
+public class ApiKeyAuthFilter extends GenericFilterBean {
+    private static final Logger logger = LoggerFactory.getLogger(ApiKeyAuthFilter.class);
 
-    @Value("${Api-key}")
+    @Value("${apikey.name}")
+    private String apiKeyName;
+
+    @Value("${apikey.key}")
     private String apiKey;
 
-    public APIKeyAuthFilter() { }
+    public ApiKeyAuthFilter() { }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -33,7 +36,7 @@ public class APIKeyAuthFilter extends GenericFilterBean {
             return;
         }
 
-        String key = req.getHeader("Api-key") == null ? "" : req.getHeader("Api-key");
+        String key = req.getHeader(apiKeyName) == null ? "" : req.getHeader(apiKeyName);
         logger.debug("Trying key: " + key);
 
         if(key.equals(apiKey)){
