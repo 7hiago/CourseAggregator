@@ -1,0 +1,52 @@
+version: "3.9"
+
+volumes:
+  postgres_volume:
+
+services:
+  travel_crm:
+    image: travel-crm-app
+    container_name: travel-crm-app
+    restart: always
+    ports:
+      - "8050:8050"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-db:5432/travel_crm_database"
+      SPRING_DATASOURCE_USERNAME: "travel_crm_admin"
+      SPRING_DATASOURCE_PASSWORD: "travel_crm_admin"
+      API_URL: "http://course-aggregator-app:8060/api/bestCourse"
+    networks:
+      - postgres
+      - app-network
+
+  postgres:
+    image: postgres:13.3
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: "travel_crm_admin"
+      POSTGRES_PASSWORD: "travel_crm_admin"
+      POSTGRES_DB: "travel_crm_database"
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+  course-aggregator:
+    image: course-aggregator-app
+    container_name: course-aggregator-app
+    restart: always
+    ports:
+      - "8060:8060"
+    networks:
+      - app-network
+
+networks:
+  postgres:
+    driver: bridge
+  app-network:
+    driver: bridge
