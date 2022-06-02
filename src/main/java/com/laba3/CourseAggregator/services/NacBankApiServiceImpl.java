@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service("nacbank")
@@ -30,7 +31,10 @@ public class NacBankApiServiceImpl implements BankApiService{
     public CompletableFuture<Course> getCurrentCourse(String currency) {
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         ResponseEntity<Course[]> courseList = restTemplate.getForEntity(nacbankUrl + "?" + "json" + "&valcode=" + currency + "&date=" + date, Course[].class);
-        Course course = CourseExtractor.extract(courseList.getBody(), currency);
+        Course course = CourseExtractor.extract(Objects.requireNonNull(courseList.getBody()), currency);
+        if(course == null) {
+            return null;
+        }
         course.setBank("Nacbank");
         return CompletableFuture.completedFuture(course);
     }
@@ -39,7 +43,10 @@ public class NacBankApiServiceImpl implements BankApiService{
     @Override
     public CompletableFuture<Course> getArchiveCourse(String date, String currency) {
         ResponseEntity<Course[]> courseList = restTemplate.getForEntity(nacbankUrl + "?" + "json" + "&date=" + date, Course[].class);
-        Course course = CourseExtractor.extract(courseList.getBody(), currency);
+        Course course = CourseExtractor.extract(Objects.requireNonNull(courseList.getBody()), currency);
+        if(course == null) {
+            return null;
+        }
         course.setBank("Nacbank");
         return CompletableFuture.completedFuture(course);
     }

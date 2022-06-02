@@ -2,6 +2,7 @@ package com.laba3.CourseAggregator.services;
 
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeException;
 import com.laba3.CourseAggregator.entities.Course;
+import com.laba3.CourseAggregator.exceptions.ApiInternalException;
 import com.laba3.CourseAggregator.exceptions.CourseNotFoundException;
 import com.laba3.CourseAggregator.exceptions.DateWrongParametersException;
 import com.laba3.CourseAggregator.utils.DateValidation;
@@ -33,25 +34,26 @@ public class CourseService {
     @Cacheable(value = "courses-nacbank", key = "#currency")
     public Course getNacbankCurrentCourse(String currency) {
         logger.debug("execute getNacbankCurrentCourse method");
-        Course course = null;
+        Course course;
 
         try {
             course = nacBankApiServiceImpl.getCurrentCourse(currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
         } catch (InterruptedException | ExecutionException e) {
             logger.debug(e.getMessage());
+            throw new ApiInternalException(e.getMessage());
         }
 
-        if(course == null) {
-            logger.warn(currency + " currency is not available in this bank");
-            throw new CourseNotFoundException(currency + " currency is not available in this bank");
-        }
         return course;
     }
 
     @Cacheable(value = "courses-nacbank", key = "{#date, #currency }")
     public Course getNacbankArchiveCourse(String date, String currency) {
         logger.debug("execute getNacbankArchiveCourse method");
-        Course course = null;
+        Course course;
 
         try {
             date = DateValidation.validate(date, "yyyyMMdd");
@@ -63,39 +65,42 @@ public class CourseService {
 
         try {
             course = nacBankApiServiceImpl.getArchiveCourse(date, currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+            throw new ApiInternalException(e.getMessage());
+
         }
 
-        if(course == null) {
-            logger.warn(currency + " currency is not available in this bank");
-            throw new CourseNotFoundException(currency + " currency is not available in this bank");
-        }
         return course;
     }
 
     @Cacheable(value = "courses-privatbank", key = "#currency")
     public Course getPrivatbankCurrentCourse(String currency) {
         logger.debug("execute getPrivatbankCurrentCourse method");
-        Course course = null;
+        Course course;
 
         try {
             course = privatBankApiServiceImpl.getCurrentCourse(currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+            throw new ApiInternalException(e.getMessage());
         }
 
-        if(course == null) {
-            logger.warn(currency + " currency is not available in this bank");
-            throw new CourseNotFoundException(currency + " currency is not available in this bank");
-        }
         return course;
     }
 
     @Cacheable(value = "courses-privatbank", key = "{#date, #currency }")
     public Course getPrivatbankArchiveCourse(String date, String currency) {
         logger.debug("execute getPrivatbankArchiveCourse method");
-        Course course = null;
+        Course course;
 
         try {
             date = DateValidation.validate(date, "dd.MM.yyyy");
@@ -107,36 +112,34 @@ public class CourseService {
 
         try {
             course = privatBankApiServiceImpl.getArchiveCourse(date, currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+            throw new ApiInternalException(e.getMessage());
         }
 
-        if(course == null) {
-            logger.warn(currency + " currency is not available in this bank");
-            throw new CourseNotFoundException(currency + " currency is not available in this bank");
-        }
         return course;
     }
 
     @Cacheable(value = "courses-monobank", key = "#currency")
     public Course getMonobankCurrentCourse(String currency) {
         logger.debug("execute getMonobankCurrentCourse method");
-        Course course = null;
+        Course course;
 
         try {
             course = monoBankApiServiceImpl.getCurrentCourse(currency).get();
+            if(course == null) {
+                logger.warn(currency + " currency is not available in this bank");
+                throw new CourseNotFoundException(currency + " currency is not available in this bank");
+            }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage());
+            throw new ApiInternalException(e.getMessage());
         }
 
-        if(course == null) {
-            logger.warn(currency + " currency is not available in this bank");
-            throw new CourseNotFoundException(currency + " currency is not available in this bank");
-        }
         return course;
     }
-//         } catch (ResourceAccessException e) {
-//            logger.error("Nacbank api connecting timeout");
-//            throw new ApiTimeoutException("Nacbank api connecting timeout");
-//        }
 }

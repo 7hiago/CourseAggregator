@@ -15,20 +15,19 @@ public class AppResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         super();
     }
 
-    // API
-
     // 400
 
     @ExceptionHandler(value = { DateWrongParametersException.class })
     public ResponseEntity<Object> handleBadRequest(RuntimeException ex, WebRequest request) {
-        final String bodyOfResponse = "DateWrongParametersException";
+        final String bodyOfResponse = "Bad request! " + ex.getMessage();
         logger.debug("400 Status Code. " + ex.getMessage());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ BadRequestException.class })
     public ResponseEntity<Object> handleBadRequest(BadRequestException ex, WebRequest request) {
-        final String bodyOfResponse = "This should be application specific";
+        final String bodyOfResponse = "Bad request! " + ex.getMessage();
+        logger.debug("400 Status Code. " + ex.getMessage());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
@@ -36,16 +35,17 @@ public class AppResponseEntityExceptionHandler extends ResponseEntityExceptionHa
 
     @ExceptionHandler(value = { CourseNotFoundException.class, ResourceNotFoundException.class })
     public ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {
-        final String bodyOfResponse = "CourseNotFoundException";
+        final String bodyOfResponse = "Not found! " + ex.getMessage();
+        logger.debug("404 Status Code. " + ex.getMessage());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     // 500
 
-    @ExceptionHandler({ NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class, ApiTimeoutException.class })
+    @ExceptionHandler({ NullPointerException.class, IllegalArgumentException.class, IllegalStateException.class, ApiInternalException.class })
     public ResponseEntity<Object> handleInternal(RuntimeException ex, WebRequest request) {
-        logger.error("500 Status Code", ex);
-        final String bodyOfResponse = "This should be application specific";
+        final String bodyOfResponse = "Internal server error! " + ex.getMessage();
+        logger.error("500 Status Code. " + ex.getMessage());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 }

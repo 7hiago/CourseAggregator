@@ -1,42 +1,36 @@
 package com.laba3.CourseAggregator.exceptions;
 
-import com.laba3.CourseAggregator.exceptions.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 
 import java.io.IOException;
 
-import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
-import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
-
 @Component
-public class RestTemplateResponseErrorHandler
-        implements ResponseErrorHandler {
+public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandler {
+    private static final Logger logger = LoggerFactory.getLogger(RestTemplateResponseErrorHandler.class);
 
     @Override
-    public boolean hasError(ClientHttpResponse httpResponse)
+    public boolean hasError(ClientHttpResponse response)
             throws IOException {
-
-        return (
-                httpResponse.getStatusCode().series() == CLIENT_ERROR
-                        || httpResponse.getStatusCode().series() == SERVER_ERROR);
+        try {
+            return super.hasError(response);
+        } catch (Exception e) {
+            logger.error("Exception [" + e.getMessage() + "] occurred while trying to send the request", e);
+            return true;
+        }
     }
 
     @Override
-    public void handleError(ClientHttpResponse httpResponse)
+    public void handleError(ClientHttpResponse response)
             throws IOException {
-
-        if (httpResponse.getStatusCode()
-                .series() == HttpStatus.Series.SERVER_ERROR) {
-            // handle SERVER_ERROR
-        } else if (httpResponse.getStatusCode()
-                .series() == HttpStatus.Series.CLIENT_ERROR) {
-            // handle CLIENT_ERROR
-            if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new ResourceNotFoundException();
-            }
+        try {
+            super.handleError(response);
+        } catch (Exception e) {
+            logger.error("Exception [" + e.getMessage() + "] occurred while trying to send the request", e);
+            throw e;
         }
     }
 }

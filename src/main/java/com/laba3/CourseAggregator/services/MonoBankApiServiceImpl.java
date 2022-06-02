@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service("monobank")
@@ -38,16 +39,19 @@ public class MonoBankApiServiceImpl implements BankApiService{
         LocalDateTime now = LocalDateTime.now();
         ZoneId zone = ZoneId.of("Europe/Kiev");
 
-        for (Course course : courseList.getBody()) {
+        for (Course course : Objects.requireNonNull(courseList.getBody())) {
             if (course.getCurrency().equals(converter.convert(currency))) {
                 course.setCurrency(currency);
-                LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(Integer.valueOf(course.getDate()), 0, zone.getRules().getOffset(now));
+                LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(Integer.parseInt(course.getDate()), 0, zone.getRules().getOffset(now));
                 course.setDate(localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
                 course.setBank("Monobank");
                 logger.debug("execute getCurrentCourse method with " + course);
                 outCourse = course;
                 break;
             }
+        }
+        if(outCourse == null) {
+            return null;
         }
         return CompletableFuture.completedFuture(outCourse);
     }
