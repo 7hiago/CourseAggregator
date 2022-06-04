@@ -1,11 +1,7 @@
 FROM openjdk:11
 
-WORKDIR /app
+ARG WAR_FILE=target/*.war
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN ./mvnw dependency:go-offline
+COPY ${WAR_FILE} app.war
 
-COPY src ./src
-
-CMD ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java","-jar","/app.war"]
