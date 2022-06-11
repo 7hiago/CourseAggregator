@@ -1,6 +1,6 @@
-package com.laba3.CourseAggregator.services;
+package com.laba3.services;
 
-import com.laba3.CourseAggregator.entities.Course;
+import com.laba3.entities.Course;
 
 import java.util.concurrent.CompletableFuture;
 

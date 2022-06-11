@@ -1,7 +1,7 @@
-package com.laba3.CourseAggregator.services;
+package com.laba3.services;
 
-import com.laba3.CourseAggregator.entities.Course;
-import com.laba3.CourseAggregator.exceptions.DateWrongParametersException;
+import com.laba3.entities.Course;
+import com.laba3.exceptions.DateWrongParametersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

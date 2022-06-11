@@ -1,4 +1,4 @@
-package com.laba3.CourseAggregator.auth;
+package com.laba3.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

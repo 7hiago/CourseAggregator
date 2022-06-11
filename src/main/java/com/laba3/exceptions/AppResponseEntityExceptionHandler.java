@@ -1,4 +1,4 @@
-package com.laba3.CourseAggregator.exceptions;
+package com.laba3.exceptions;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
-package com.laba3.CourseAggregator;
+package com.laba3;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.laba3.CourseAggregator.exceptions.AsyncExceptionHandler;
-import com.laba3.CourseAggregator.exceptions.RestTemplateResponseErrorHandler;
-import com.laba3.CourseAggregator.utils.CurrencyNamingConverter;
+import com.laba3.exceptions.AsyncExceptionHandler;
+import com.laba3.exceptions.RestTemplateResponseErrorHandler;
+import com.laba3.utils.CurrencyNamingConverter;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

@@ -1,4 +1,4 @@
-package com.laba3.CourseAggregator.entities;
+package com.laba3.entities;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

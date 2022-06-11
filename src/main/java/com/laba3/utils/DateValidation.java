@@ -1,4 +1,4 @@
-package com.laba3.CourseAggregator.utils;
+package com.laba3.utils;
 
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeException;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
-package com.laba3.CourseAggregator.utils;
+package com.laba3.utils;
 
-import com.laba3.CourseAggregator.entities.Course;
+import com.laba3.entities.Course;
 
 public class CourseExtractor {
     public static Course extract(Course[] courseList, String requiredCurrency) {

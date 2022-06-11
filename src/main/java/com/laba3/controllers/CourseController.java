@@ -1,8 +1,8 @@
-package com.laba3.CourseAggregator.controllers;
+package com.laba3.controllers;
 
-import com.laba3.CourseAggregator.entities.Course;
-import com.laba3.CourseAggregator.services.CourseService;
-import com.laba3.CourseAggregator.services.FeatureCourseService;
+import com.laba3.entities.Course;
+import com.laba3.services.CourseService;
+import com.laba3.services.FeatureCourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

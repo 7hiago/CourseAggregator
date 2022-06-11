@@ -1,11 +1,11 @@
-package com.laba3.CourseAggregator.services;
+package com.laba3.services;
 
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeException;
-import com.laba3.CourseAggregator.entities.Course;
-import com.laba3.CourseAggregator.exceptions.ApiInternalException;
-import com.laba3.CourseAggregator.exceptions.CourseNotFoundException;
-import com.laba3.CourseAggregator.exceptions.DateWrongParametersException;
-import com.laba3.CourseAggregator.utils.DateValidation;
+import com.laba3.entities.Course;
+import com.laba3.exceptions.ApiInternalException;
+import com.laba3.exceptions.CourseNotFoundException;
+import com.laba3.exceptions.DateWrongParametersException;
+import com.laba3.utils.DateValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
