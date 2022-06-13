@@ -4,7 +4,6 @@ import com.laba3.entities.Course;
 import com.laba3.utils.CurrencyNamingConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -24,11 +23,13 @@ public class MonoBankApiServiceImpl implements BankApiService{
     @Value("${monobank.url}")
     private String monobankCurrentUrl;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final CurrencyNamingConverter converter;
 
-    @Autowired
-    private CurrencyNamingConverter converter;
+    public MonoBankApiServiceImpl(RestTemplate restTemplate, CurrencyNamingConverter converter) {
+        this.restTemplate = restTemplate;
+        this.converter = converter;
+    }
 
     @Async("asyncCourseExecutor")
     @Override

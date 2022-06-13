@@ -27,11 +27,13 @@ public class PrivatBankApiServiceImpl implements BankApiService {
     @Value("${privatbank.archive.url}")
     private String privatbankArchiveUrl;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final CourseExtractor courseExtractor;
 
-    @Autowired
-    private CourseExtractor courseExtractor;
+    public PrivatBankApiServiceImpl(RestTemplate restTemplate, CourseExtractor courseExtractor) {
+        this.restTemplate = restTemplate;
+        this.courseExtractor = courseExtractor;
+    }
 
     @Async("asyncCourseExecutor")
     @Override

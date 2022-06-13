@@ -23,11 +23,13 @@ public class NacBankApiServiceImpl implements BankApiService{
     @Value("${nacbank.url}")
     private String nacbankUrl;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final CourseExtractor courseExtractor;
 
-    @Autowired
-    private CourseExtractor courseExtractor;
+    public NacBankApiServiceImpl(RestTemplate restTemplate, CourseExtractor courseExtractor) {
+        this.restTemplate = restTemplate;
+        this.courseExtractor = courseExtractor;
+    }
 
     @Async("asyncCourseExecutor")
     @Override
