@@ -21,20 +21,23 @@ import java.util.concurrent.CompletableFuture;
 public class PrivatBankApiServiceImpl implements BankApiService {
     private static final Logger logger = LoggerFactory.getLogger(PrivatBankApiServiceImpl.class);
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Value("${privatbank.current.url}")
     private String privatbankCurrentUrl;
 
     @Value("${privatbank.archive.url}")
     private String privatbankArchiveUrl;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private CourseExtractor courseExtractor;
+
     @Async("asyncCourseExecutor")
     @Override
     public CompletableFuture<Course> getCurrentCourse(String currency) {
         ResponseEntity<Course[]> courseList = restTemplate.getForEntity(privatbankCurrentUrl, Course[].class);
-        Course course = CourseExtractor.extract(Objects.requireNonNull(courseList.getBody()), currency);
+        Course course = courseExtractor.extract(Objects.requireNonNull(courseList.getBody()), currency);
         if(course == null) {
             return null;
         }
@@ -47,7 +50,7 @@ public class PrivatBankApiServiceImpl implements BankApiService {
     @Override
     public CompletableFuture<Course> getArchiveCourse(String date, String currency) {
         ResponseEntity<PrivatbankArchiveApiData> privatbankArchiveData = restTemplate.getForEntity(privatbankArchiveUrl + "?" + "json" + "&date=" + date, PrivatbankArchiveApiData.class);
-        Course course = CourseExtractor.extract(Objects.requireNonNull(privatbankArchiveData.getBody()).getCourses().toArray(new Course[0]), currency);
+        Course course = courseExtractor.extract(Objects.requireNonNull(privatbankArchiveData.getBody()).getCourses().toArray(new Course[0]), currency);
         if(course == null) {
             return null;
         }

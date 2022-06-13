@@ -8,6 +8,7 @@ import com.laba3.exceptions.DateWrongParametersException;
 import com.laba3.utils.DateValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class CourseService {
     private final BankApiService nacBankApiServiceImpl;
     private final BankApiService privatBankApiServiceImpl;
     private final BankApiService monoBankApiServiceImpl;
+
+    @Autowired
+    private DateValidation dateValidation;
 
     public CourseService(@Qualifier("nacbank") BankApiService nacBankApiServiceImpl,
                          @Qualifier("privatbank") BankApiService privatBankApiServiceImpl,
@@ -56,7 +60,7 @@ public class CourseService {
         Course course;
 
         try {
-            date = DateValidation.validate(date, "yyyyMMdd");
+            date = dateValidation.validate(date, "yyyyMMdd");
         } catch (DateTimeParseException e) {
             throw new DateWrongParametersException(date + " date format is not available. Use dd.MM.yyyy format!");
         } catch (DatatypeException e) {
@@ -103,7 +107,7 @@ public class CourseService {
         Course course;
 
         try {
-            date = DateValidation.validate(date, "dd.MM.yyyy");
+            date = dateValidation.validate(date, "dd.MM.yyyy");
         } catch (DateTimeParseException e) {
             throw new DateWrongParametersException(date + " date format is not available. Use dd.MM.yyyy format!");
         } catch (DatatypeException e) {

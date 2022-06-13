@@ -21,11 +21,11 @@ import java.util.concurrent.CompletableFuture;
 public class MonoBankApiServiceImpl implements BankApiService{
     private static final Logger logger = LoggerFactory.getLogger(MonoBankApiServiceImpl.class);
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Value("${monobank.url}")
     private String monobankCurrentUrl;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private CurrencyNamingConverter converter;
