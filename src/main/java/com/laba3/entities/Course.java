@@ -3,6 +3,8 @@ package com.laba3.entities;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Objects;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Course implements Comparable<Course> {
 
@@ -60,5 +62,18 @@ public class Course implements Comparable<Course> {
     @Override
     public int compareTo(Course o) {
         return Float.compare(getCourse(), o.getCourse());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+        Course course1 = (Course) o;
+        return Float.compare(course1.getCourse(), getCourse()) == 0 && getDate().equals(course1.getDate()) && getCurrency().equals(course1.getCurrency()) && getBank().equals(course1.getBank());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCourse(), getDate(), getCurrency(), getBank());
     }
 }
